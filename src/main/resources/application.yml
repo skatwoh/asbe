@@ -1,0 +1,47 @@
+server:
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024 # Compress the response only if the response size is at least 1KB
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://dpg-cukpuo5umphs73bgffl0-a.singapore-postgres.render.com:5432/asdb_jmlu
+    username: asdb_jmlu_user
+    password: TXUW7CgVpdl3MIDTCTKmGDGb89c7udYp
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        implicit_naming_strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+#spring:
+#  datasource:
+#    url: jdbc:sqlserver://localhost;databaseName=as;encrypt=true;trustServerCertificate=true
+#    username: sa
+#    password: 123@123a
+#    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.SQLServer2012Dialect
+#        physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+app:
+  cors:
+    allowedOrigins: http://localhost:3000,http://localhost:8080
+    allowed-methods: GET, POST, PUT, DELETE, OPTIONS
+    allowed-headers: "*"
+    exposed-headers: "*"
+#logging:
+#  level:
+#    org.springframework.security: DEBUG
