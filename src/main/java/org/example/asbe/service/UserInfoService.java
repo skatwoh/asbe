@@ -2,6 +2,8 @@ package org.example.asbe.service;
 
 import org.example.asbe.entity.UserInfo;
 import org.example.asbe.repository.UserInfoRepository;
+import org.example.asbe.util.CustomException;
+import org.example.asbe.util.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,6 +22,9 @@ public class UserInfoService implements UserDetailsService {
     @Autowired
     private PasswordEncoder encoder;
 
+    @Autowired
+    private MessageUtil messageUtil;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserInfo> userDetail = repository.findByUsername(username); // Assuming 'email' is used as username
@@ -30,10 +35,14 @@ public class UserInfoService implements UserDetailsService {
     }
 
     public String addUser(UserInfo userInfo) {
+        if(repository.findByUsername(userInfo.getUsername()).isPresent()) {
+            throw new CustomException(messageUtil.getMessage("error.user.exists", userInfo.getUsername()));
+//            return messageUtil.getMessage("error.user.exists", userInfo.getUsername());
+        }
         // Encode password before saving the user
         userInfo.setPassword(encoder.encode(userInfo.getPassword()));
         repository.save(userInfo);
-        return "User Added Successfully";
+        return messageUtil.getMessage("success.user.added", userInfo.getUsername());
     }
 }
 

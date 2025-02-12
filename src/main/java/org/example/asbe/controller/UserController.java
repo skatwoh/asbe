@@ -4,7 +4,10 @@ import org.example.asbe.entity.AuthRequest;
 import org.example.asbe.entity.UserInfo;
 import org.example.asbe.service.JwtService;
 import org.example.asbe.service.UserInfoService;
+import org.example.asbe.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,9 +34,9 @@ public class UserController {
     }
 
     @PostMapping("/addNewUser")
-    public String addNewUser(@RequestBody UserInfo userInfo) {
+    public ResponseEntity<?> addNewUser(@RequestBody UserInfo userInfo) {
         userInfo.setRoles("ROLE_USER");
-        return service.addUser(userInfo);
+        return ResponseUtil.response(HttpStatus.OK, service.addUser(userInfo), null, null);
     }
 
     @GetMapping("/user/userProfile")

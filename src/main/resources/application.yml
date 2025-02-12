@@ -20,6 +20,12 @@ spring:
       hibernate:
         implicit_naming_strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
         physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    messages:
+      basename: messages
+      encoding: UTF-8
+      fallback-to-system-locale: false
+      use-code-as-default-message: true
+
 
 #spring:
 #  datasource:
