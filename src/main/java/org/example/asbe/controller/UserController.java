@@ -32,6 +32,7 @@ public class UserController {
 
     @PostMapping("/addNewUser")
     public String addNewUser(@RequestBody UserInfo userInfo) {
+        userInfo.setRoles("ROLE_USER");
         return service.addUser(userInfo);
     }
 
