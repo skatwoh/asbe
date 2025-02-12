@@ -8,18 +8,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfo {
+public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String username;
-    private String email;
-    private String password;
-    private String roles;
-
+    private String title;
+    private String author;
+    private String genre;
+    private Date published;
+    private String publisher;
+    private String description;
+    private String imageUrl;
+    private Date created;
+    private Date updated;
 }
-
