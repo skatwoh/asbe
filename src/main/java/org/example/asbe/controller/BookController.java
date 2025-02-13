@@ -1,5 +1,6 @@
 package org.example.asbe.controller;
 
+import jakarta.validation.Valid;
 import org.example.asbe.entity.Book;
 import org.example.asbe.service.BookService;
 import org.example.asbe.util.ResponseUtil;
@@ -18,7 +19,7 @@ public class BookController {
     private BookService service;
 
     @PostMapping("/addBook")
-    public ResponseEntity<?> addNewUser(@RequestBody Book book) {
+    public ResponseEntity<?> addNewUser(@RequestBody @Valid Book book) {
         return ResponseUtil.response(HttpStatus.OK, service.addBook(book), null, null);
     }
 }

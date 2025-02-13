@@ -37,7 +37,8 @@ public class UserInfoService implements UserDetailsService {
     public String addUser(UserInfo userInfo) {
         if(repository.findByUsername(userInfo.getUsername()).isPresent()) {
             throw new CustomException(messageUtil.getMessage("error.user.exists", userInfo.getUsername()));
-//            return messageUtil.getMessage("error.user.exists", userInfo.getUsername());
+        } else if(repository.findByEmail(userInfo.getEmail()).isPresent()) {
+            throw new CustomException(messageUtil.getMessage("error.email.exists", userInfo.getEmail()));
         }
         // Encode password before saving the user
         userInfo.setPassword(encoder.encode(userInfo.getPassword()));

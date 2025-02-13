@@ -22,7 +22,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGenericException(Exception ex) {
-        String errorMessage = messageUtil.getMessage("error.system");
-        return ResponseUtil.error(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
+        return ResponseUtil.error(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 }

@@ -10,10 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/auth")
@@ -52,16 +55,24 @@ public class UserController {
     }
 
     @PostMapping("/generateToken")
-    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-        );
+    public ResponseEntity<?> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+            );
 
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.getUsername());
-        } else {
-            throw new UsernameNotFoundException("Invalid user request!");
+            // Nếu authenticate thành công, tiếp tục tạo token
+            String token = jwtService.generateToken(authRequest.getUsername());
+            return ResponseUtil.success(token, "Token generated successfully!");
+
+        } catch (BadCredentialsException ex) {
+            // Xử lý lỗi đăng nhập sai thông tin
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password!", ex);
+        } catch (UsernameNotFoundException ex) {
+            // Xử lý lỗi user không tồn tại
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!", ex);
         }
+
     }
 }
 
