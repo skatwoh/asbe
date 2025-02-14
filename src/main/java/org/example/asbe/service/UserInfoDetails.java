@@ -1,6 +1,6 @@
 package org.example.asbe.service;
 
-import org.example.asbe.entity.UserInfo;
+import org.example.asbe.model.entity.UserInfo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

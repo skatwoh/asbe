@@ -1,4 +1,4 @@
-package org.example.asbe.entity;
+package org.example.asbe.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

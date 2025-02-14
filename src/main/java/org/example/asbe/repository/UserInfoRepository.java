@@ -1,6 +1,6 @@
 package org.example.asbe.repository;
 
-import org.example.asbe.entity.UserInfo;
+import org.example.asbe.model.entity.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

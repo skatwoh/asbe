@@ -1,4 +1,4 @@
-package org.example.asbe.entity;
+package org.example.asbe.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

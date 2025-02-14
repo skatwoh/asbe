@@ -1,7 +1,7 @@
 package org.example.asbe.controller;
 
-import org.example.asbe.entity.AuthRequest;
-import org.example.asbe.entity.UserInfo;
+import org.example.asbe.model.entity.AuthRequest;
+import org.example.asbe.model.entity.UserInfo;
 import org.example.asbe.service.JwtService;
 import org.example.asbe.service.UserInfoService;
 import org.example.asbe.util.ResponseUtil;
@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -73,6 +72,12 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!", ex);
         }
 
+    }
+
+    @GetMapping("/list-user")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<?> listUser(int page, int size) {
+        return ResponseUtil.success(service.listUsers(page, size), "List user successfully!");
     }
 }
 

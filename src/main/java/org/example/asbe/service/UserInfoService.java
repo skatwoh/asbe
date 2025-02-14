@@ -1,10 +1,17 @@
 package org.example.asbe.service;
 
-import org.example.asbe.entity.UserInfo;
+import org.example.asbe.mapper.UserMapper;
+import org.example.asbe.model.dto.UserDTO;
+import org.example.asbe.model.entity.UserInfo;
 import org.example.asbe.repository.UserInfoRepository;
 import org.example.asbe.util.CustomException;
 import org.example.asbe.util.MessageUtil;
+import org.example.asbe.util.dto.PagedResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,6 +31,9 @@ public class UserInfoService implements UserDetailsService {
 
     @Autowired
     private MessageUtil messageUtil;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -45,5 +55,21 @@ public class UserInfoService implements UserDetailsService {
         repository.save(userInfo);
         return messageUtil.getMessage("success.user.added", userInfo.getUsername());
     }
+
+    public PagedResponse<UserDTO> listUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.Direction.ASC, "id");
+        Page<UserInfo> entities = repository.findAll(pageable);
+
+        return new PagedResponse<>(
+                userMapper.toDtoList(entities.getContent()),
+                page,
+                size,
+                entities.getTotalElements(),
+                entities.getTotalPages(),
+                entities.isLast(),
+                entities.getSort().toString()
+        );
+    }
+
 }
 
