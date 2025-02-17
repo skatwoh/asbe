@@ -9,4 +9,11 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper extends EntityMapper<UserDTO, UserInfo> {
+
+        UserDTO toDto(UserInfo entity);
+
+        UserInfo toEntity(UserDTO dto);
+
+        List<UserDTO> toDtoList(List<UserInfo> entityList);
+
 }

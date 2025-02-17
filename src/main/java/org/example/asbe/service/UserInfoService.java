@@ -44,6 +44,11 @@ public class UserInfoService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
+    public UserInfo getUserByUsername(String username) {
+        return repository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    }
+
     public String addUser(UserInfo userInfo) {
         if(repository.findByUsername(userInfo.getUsername()).isPresent()) {
             throw new CustomException(messageUtil.getMessage("error.user.exists", userInfo.getUsername()));
@@ -57,7 +62,10 @@ public class UserInfoService implements UserDetailsService {
     }
 
     public PagedResponse<UserDTO> listUsers(int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.Direction.ASC, "id");
+        if (page < 1) throw new IllegalArgumentException("Page number must be greater than 0");
+        if (size <= 0) throw new IllegalArgumentException("Page size must be greater than 0");
+
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "id"));
         Page<UserInfo> entities = repository.findAll(pageable);
 
         return new PagedResponse<>(
@@ -70,6 +78,7 @@ public class UserInfoService implements UserDetailsService {
                 entities.getSort().toString()
         );
     }
+
 
 }
 

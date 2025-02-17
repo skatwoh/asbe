@@ -4,6 +4,7 @@ import org.example.asbe.model.entity.AuthRequest;
 import org.example.asbe.model.entity.UserInfo;
 import org.example.asbe.service.JwtService;
 import org.example.asbe.service.UserInfoService;
+import org.example.asbe.service.impl.UserServiceImpl;
 import org.example.asbe.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
+import java.util.List;
+
 @RestController
 @RequestMapping("/auth")
 public class UserController {
@@ -26,6 +30,9 @@ public class UserController {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private UserServiceImpl userServiceImpl;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -60,8 +67,16 @@ public class UserController {
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
             );
 
+            List<String> roles = null;
+
+            if(service.getUserByUsername(authRequest.getUsername()).getRoles().equals("ROLE_ADMIN")) {
+                roles = Collections.singletonList("ROLE_ADMIN");
+            } else {
+                roles = Collections.singletonList("ROLE_USER");
+            }
+
             // Nếu authenticate thành công, tiếp tục tạo token
-            String token = jwtService.generateToken(authRequest.getUsername());
+            String token = jwtService.generateToken(authRequest.getUsername(), roles);
             return ResponseUtil.success(token, "Token generated successfully!");
 
         } catch (BadCredentialsException ex) {
@@ -76,8 +91,16 @@ public class UserController {
 
     @GetMapping("/list-user")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<?> listUser(int page, int size) {
+    public ResponseEntity<?> listUser(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
         return ResponseUtil.success(service.listUsers(page, size), "List user successfully!");
     }
+
+    @PutMapping("/update-user/{id}")
+    public ResponseEntity<?> updateUser(@RequestBody UserInfo userInfo, @PathVariable Integer id) {
+        return ResponseUtil.success(userServiceImpl.updateUser(userInfo, id), "Update user successfully!");
+    }
+
 }
 

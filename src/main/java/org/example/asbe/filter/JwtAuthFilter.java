@@ -29,22 +29,32 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // Retrieve the Authorization header
-        String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
 
-        // Check if the header starts with "Bearer "
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7); // Extract token
-            username = jwtService.extractUsername(token); // Extract username from token
+        // Lấy token từ Cookie nếu có
+        String cookieHeader = request.getHeader("Cookie");
+        if (cookieHeader != null && cookieHeader.startsWith("token=")) {
+            token = cookieHeader.substring(6); // Cắt "token=" để lấy token
         }
 
-        // If the token is valid and no authentication is set in the context
+        // Nếu không có token trong Cookie, thử lấy từ Authorization header
+        if (token == null) {
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7); // Cắt "Bearer " để lấy token
+            }
+        }
+
+        // Nếu lấy được token, trích xuất username
+        if (token != null) {
+            username = jwtService.extractUsername(token);
+        }
+
+        // Kiểm tra và thiết lập xác thực nếu hợp lệ
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            // Validate token and set authentication
             if (jwtService.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
@@ -56,8 +66,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }
 
-        // Continue the filter chain
+        // Tiếp tục chuỗi filter
         filterChain.doFilter(request, response);
     }
 }
-
