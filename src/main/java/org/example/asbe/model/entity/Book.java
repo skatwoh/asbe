@@ -25,7 +25,6 @@ public class Book {
 
     @NotBlank(message = "Author is required")
     private String author;
-
     private String genre;
     private Date published;
     private String publisher;
