@@ -24,4 +24,20 @@ public class BookServiceImpl implements BookService {
         repository.save(book);
         return messageUtil.getMessage("success");
     }
+
+    public Book updateBook(Book book, Integer id) {
+        if(repository.existsById(id)){
+            Book existingBook = repository.findById(id).get();
+            existingBook.setTitle(book.getTitle());
+            existingBook.setAuthor(book.getAuthor());
+            existingBook.setGenre(book.getGenre());
+            existingBook.setPublished(book.getPublished());
+            existingBook.setPublisher(book.getPublisher());
+            existingBook.setDescription(book.getDescription());
+            existingBook.setImageUrl(book.getImageUrl());
+            return repository.save(book);
+        }
+        return  null;
+    }
+
 }

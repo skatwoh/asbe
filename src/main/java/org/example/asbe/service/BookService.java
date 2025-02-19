@@ -5,4 +5,6 @@ import org.example.asbe.model.entity.Book;
 public interface BookService {
 
     String addBook(Book book);
+
+    Book updateBook(Book book, Integer id);
 }
