@@ -20,11 +20,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = request.getHeader("Authorization");
+        String token = null;
+        String username = null;
 
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7); // Remove "Bearer "
+        String cookieHeader = request.getHeader("Cookie");
+        if (cookieHeader != null && cookieHeader.startsWith("token=")) {
+            token = cookieHeader.substring(6); // Cắt "token=" để lấy token
+        }
 
+        if(token == null) {
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7); // Cắt "Bearer " để lấy token
+            }
+        }
+
+        if (token != null) {
             // Xác thực JWT
             if (jwtTokenProvider.validateToken(token)) {
                 UsernamePasswordAuthenticationToken authentication =
