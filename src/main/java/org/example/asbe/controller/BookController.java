@@ -7,6 +7,7 @@ import org.example.asbe.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,13 @@ public class BookController {
     @Autowired
     private BookServiceImpl bookServiceImpl;
 
+    @GetMapping("/list-book")
+    public ResponseEntity<?> listBook(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+        return ResponseUtil.success(service.listBook(page, size), "List user successfully!");
+    }
+
     @PostMapping("/addBook")
     public ResponseEntity<?> addNewUser(@RequestBody @Valid Book book, BindingResult result) {
         if (result.hasErrors()) {
@@ -36,5 +44,10 @@ public class BookController {
     @PutMapping("/update-book/{id}")
     public ResponseEntity<?> updateBook(@RequestBody Book book, @PathVariable Integer id) {
         return ResponseUtil.success(bookServiceImpl.updateBook(book, id), "Update book successfully!");
+    }
+
+    @DeleteMapping("/delete-book/{id}")
+    public ResponseEntity<?> deleteBook(@PathVariable Integer id) {
+        return ResponseUtil.success(bookServiceImpl.deleteBook(id), "Delete successfully!");
     }
 }
