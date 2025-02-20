@@ -5,10 +5,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtTokenProvider {
@@ -49,11 +52,25 @@ public class JwtTokenProvider {
         }
     }
 
-    // Lấy Authentication từ token (thường là username)
+    public List<String> getRolesFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(jwtSecret) // Cần thay secretKey bằng giá trị thực tế
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("roles", List.class); // Giả sử roles được lưu dưới dạng danh sách trong JWT
+    }
+
     public UsernamePasswordAuthenticationToken getAuthentication(String token) {
         String username = getUsernameFromToken(token);
+        List<String> roles = getRolesFromToken(token); // Hàm này cần triển khai
+
         if (username != null) {
-            return new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+            List<GrantedAuthority> authorities = new ArrayList<>();
+            for (String role : roles) {
+                authorities.add(new SimpleGrantedAuthority(role));
+            }
+            return new UsernamePasswordAuthenticationToken(username, null, authorities);
         }
         return null;
     }
