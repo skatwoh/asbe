@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BookServiceImpl implements BookService {
     @Autowired
@@ -30,6 +32,8 @@ public class BookServiceImpl implements BookService {
     public PagedResponse<BookDTO> listBook(int page, int size) {
         Pageable bookable = PageRequest.of(page - 1, size, Sort.Direction.ASC, "id");
         Page<Book> entities = repository.findAll(bookable);
+        List<BookDTO> listBookDTOS =  bookMapper.toDtoList(entities.getContent());
+
         return new PagedResponse<>(
                 bookMapper.toDtoList(entities.getContent()),
                 page,

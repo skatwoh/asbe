@@ -30,8 +30,8 @@ public class BookController {
         return ResponseUtil.success(service.listBook(page, size), "List user successfully!");
     }
 
-    @PostMapping("/addBook")
-    public ResponseEntity<?> addNewUser(@RequestBody @Valid Book book, BindingResult result) {
+    @PostMapping("/add-book")
+    public ResponseEntity<?> addNewBook(@RequestBody @Valid Book book, BindingResult result) {
         if (result.hasErrors()) {
             Map<String, String> errorMessages = result.getFieldErrors().stream()
                     .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage, (oldValue, newValue) -> newValue));
