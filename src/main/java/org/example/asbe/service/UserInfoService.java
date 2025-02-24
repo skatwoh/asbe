@@ -2,7 +2,7 @@ package org.example.asbe.service;
 
 import org.example.asbe.mapper.UserMapper;
 import org.example.asbe.model.dto.UserDTO;
-import org.example.asbe.model.entity.UserInfo;
+import org.example.asbe.model.entity.Userinfo;
 import org.example.asbe.repository.UserInfoRepository;
 import org.example.asbe.util.CustomException;
 import org.example.asbe.util.MessageUtil;
@@ -37,19 +37,19 @@ public class UserInfoService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserInfo> userDetail = repository.findByUsername(username); // Assuming 'email' is used as username
+        Optional<Userinfo> userDetail = repository.findByUsername(username); // Assuming 'email' is used as username
 
         // Converting UserInfo to UserDetails
         return userDetail.map(UserInfoDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
-    public UserInfo getUserByUsername(String username) {
+    public Userinfo getUserByUsername(String username) {
         return repository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
-    public String addUser(UserInfo userInfo) {
+    public String addUser(Userinfo userInfo) {
         if(repository.findByUsername(userInfo.getUsername()).isPresent()) {
             throw new CustomException(messageUtil.getMessage("error.user.exists", userInfo.getUsername()));
         } else if(repository.findByEmail(userInfo.getEmail()).isPresent()) {
@@ -66,7 +66,7 @@ public class UserInfoService implements UserDetailsService {
         if (size <= 0) throw new IllegalArgumentException("Page size must be greater than 0");
 
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "id"));
-        Page<UserInfo> entities = repository.findAll(pageable);
+        Page<Userinfo> entities = repository.findAll(pageable);
 
         return new PagedResponse<>(
                 userMapper.toDtoList(entities.getContent()),

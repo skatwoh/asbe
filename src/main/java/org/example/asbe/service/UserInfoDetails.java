@@ -1,6 +1,6 @@
 package org.example.asbe.service;
 
-import org.example.asbe.model.entity.UserInfo;
+import org.example.asbe.model.entity.Userinfo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,10 +15,10 @@ public class UserInfoDetails implements UserDetails {
     private String password;
     private List<GrantedAuthority> authorities;
 
-    public UserInfoDetails(UserInfo userInfo) {
+    public UserInfoDetails(Userinfo userInfo) {
         this.username = userInfo.getUsername(); // Assuming 'name' is used as 'username'
         this.password = userInfo.getPassword();
-        this.authorities = List.of(userInfo.getRoles().split(","))
+        this.authorities = List.of(userInfo.getRole().split(","))
                 .stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());

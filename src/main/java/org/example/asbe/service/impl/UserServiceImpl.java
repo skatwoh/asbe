@@ -2,7 +2,7 @@ package org.example.asbe.service.impl;
 
 import org.example.asbe.mapper.UserMapper;
 import org.example.asbe.model.dto.UserDTO;
-import org.example.asbe.model.entity.UserInfo;
+import org.example.asbe.model.entity.Userinfo;
 import org.example.asbe.repository.UserInfoRepository;
 import org.example.asbe.service.UserService;
 import org.example.asbe.util.dto.PagedResponse;
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public PagedResponse<UserDTO> listUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.Direction.ASC, "id");
-        Page<UserInfo> entities = repository.findAll(pageable);
+        Page<Userinfo> entities = repository.findAll(pageable);
 
         return new PagedResponse<>(
                 userMapper.toDtoList(entities.getContent()),
@@ -40,10 +40,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfo updateUser(UserInfo userInfo, Integer id) {
+    public Userinfo updateUser(Userinfo userInfo, Integer id) {
         if (repository.existsById(id)) {
 
-            UserInfo existingUserInfo = repository.findById(id).get();
+            Userinfo existingUserInfo = repository.findById(id).get();
             existingUserInfo.setEmail(userInfo.getEmail());
             existingUserInfo.setUsername(userInfo.getUsername());
             return repository.save(userInfo);

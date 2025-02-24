@@ -60,12 +60,12 @@ public class BookServiceImpl implements BookService {
         if(repository.existsById(id)){
             Book existingBook = repository.findById(id).get();
             existingBook.setTitle(book.getTitle());
-            existingBook.setAuthor(book.getAuthor());
-            existingBook.setGenre(book.getGenre());
-            existingBook.setPublished(book.getPublished());
+//            existingBook.setAuthor(book.getAuthor());
+//            existingBook.setGenre(book.getGenre());
+//            existingBook.setPublished(book.getPublished());
             existingBook.setPublisher(book.getPublisher());
             existingBook.setDescription(book.getDescription());
-            existingBook.setImageUrl(book.getImageUrl());
+//            existingBook.setImageUrl(book.getImageUrl());
             return repository.save(book);
         }
         return  null;

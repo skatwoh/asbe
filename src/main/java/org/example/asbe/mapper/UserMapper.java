@@ -1,13 +1,11 @@
 package org.example.asbe.mapper;
 
-import org.apache.catalina.User;
 import org.example.asbe.model.dto.UserDTO;
-import org.example.asbe.model.entity.UserInfo;
+import org.example.asbe.model.entity.Userinfo;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
-import java.util.List;
-
-@Mapper(componentModel = "spring")
-public interface UserMapper extends EntityMapper<UserDTO, UserInfo> {
+@Mapper(unmappedSourcePolicy = ReportingPolicy.IGNORE, componentModel = "spring")
+public interface UserMapper extends EntityMapper<UserDTO, Userinfo> {
 
 }

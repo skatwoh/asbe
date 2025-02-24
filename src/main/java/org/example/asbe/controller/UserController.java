@@ -1,7 +1,7 @@
 package org.example.asbe.controller;
 
 import org.example.asbe.model.entity.AuthRequest;
-import org.example.asbe.model.entity.UserInfo;
+import org.example.asbe.model.entity.Userinfo;
 import org.example.asbe.service.JwtService;
 import org.example.asbe.service.UserInfoService;
 import org.example.asbe.service.impl.UserServiceImpl;
@@ -43,8 +43,8 @@ public class UserController {
     }
 
     @PostMapping("/addNewUser")
-    public ResponseEntity<?> addNewUser(@RequestBody UserInfo userInfo) {
-        userInfo.setRoles("ROLE_USER");
+    public ResponseEntity<?> addNewUser(@RequestBody Userinfo userInfo) {
+        userInfo.setRole("ROLE_USER");
         return ResponseUtil.response(HttpStatus.OK, service.addUser(userInfo), null, null);
     }
 
@@ -69,7 +69,7 @@ public class UserController {
 
             List<String> roles = null;
 
-            if(service.getUserByUsername(authRequest.getUsername()).getRoles().equals("ROLE_ADMIN")) {
+            if(service.getUserByUsername(authRequest.getUsername()).getRole().equals("ROLE_ADMIN")) {
                 roles = Collections.singletonList("ROLE_ADMIN");
             } else {
                 roles = Collections.singletonList("ROLE_USER");
@@ -98,7 +98,7 @@ public class UserController {
     }
 
     @PutMapping("/update-user/{id}")
-    public ResponseEntity<?> updateUser(@RequestBody UserInfo userInfo, @PathVariable Integer id) {
+    public ResponseEntity<?> updateUser(@RequestBody Userinfo userInfo, @PathVariable Integer id) {
         return ResponseUtil.success(userServiceImpl.updateUser(userInfo, id), "Update user successfully!");
     }
 
