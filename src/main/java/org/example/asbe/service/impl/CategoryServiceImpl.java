@@ -1,14 +1,9 @@
 package org.example.asbe.service.impl;
 
-import org.example.asbe.mapper.AuthorMapper;
 import org.example.asbe.mapper.CategoryMapper;
-import org.example.asbe.model.dto.AuthorDto;
 import org.example.asbe.model.dto.CategoryDto;
-import org.example.asbe.model.entity.Author;
 import org.example.asbe.model.entity.Category;
-import org.example.asbe.repository.AuthorRepository;
 import org.example.asbe.repository.CategoryRepository;
-import org.example.asbe.service.AuthorService;
 import org.example.asbe.service.CategoryService;
 import org.example.asbe.util.CustomException;
 import org.example.asbe.util.MessageUtil;
