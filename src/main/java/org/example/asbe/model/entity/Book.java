@@ -31,9 +31,9 @@ public class Book {
     @Column(name = "isbn", length = 13)
     private String isbn;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "publisher_id")
-    private Publisher publisher;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "publisher_id")
+//    private Publisher publisher;
 
     @Column(name = "publication_date")
     private LocalDate publicationDate;
