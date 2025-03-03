@@ -47,6 +47,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public String addAuthor(Author author) {
+        if (repository.existsByName(author.getName()) && repository.existsByBiography(author.getBiography())) {
+            throw new CustomException(messageUtil.getMessage("author.exist"));
+        }
         repository.save(author);
         return messageUtil.getMessage("success");
     }
@@ -54,6 +57,9 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Author updateAuthor(Author author, Integer id) {
         if(repository.existsById(id)){
+            if(repository.existsByName(author.getName()) && repository.existsByBiography(author.getBiography())){
+                throw new CustomException(messageUtil.getMessage("author.exist"));
+            }
             Author existingAuthor = repository.findById(id).get();
             existingAuthor.setName(author.getName());
             existingAuthor.setBiography(author.getBiography());

@@ -2,7 +2,7 @@ package org.example.asbe.model.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Value;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -10,7 +10,11 @@ import java.time.Instant;
 /**
  * DTO for {@link org.example.asbe.model.entity.Author}
  */
-@Value
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AuthorDto implements Serializable {
     Integer id;
     @NotNull
