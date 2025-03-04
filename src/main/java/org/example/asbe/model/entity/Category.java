@@ -18,7 +18,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ColumnDefault("nextval('categories_category_id_seq')")
     @Column(name = "category_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Size(max = 50)
     @NotNull

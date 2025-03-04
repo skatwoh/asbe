@@ -53,8 +53,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category updateCategory(Category category, Integer id) {
-        if(repository.existsById(id)){
-            Category existingAuthor = repository.findById(id).get();
+        if(repository.existsById(Long.valueOf(id))){
+            Category existingAuthor = repository.findById(Long.valueOf(id)).get();
             existingAuthor.setName(category.getName());
             existingAuthor.setDescription(category.getDescription());
             existingAuthor.setParent(category.getParent());
@@ -65,10 +65,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public String deleteCategory(Integer id) {
-        if (!repository.existsById(id)) {
+        if (!repository.existsById(Long.valueOf(id))) {
             throw new CustomException(messageUtil.getMessage("error.category.notFound", id));
         }
-        repository.deleteById(id);
+        repository.deleteById(Long.valueOf(id));
         return messageUtil.getMessage("success.category.delete", id);
     }
 }

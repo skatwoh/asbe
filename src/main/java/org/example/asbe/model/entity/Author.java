@@ -18,10 +18,10 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ColumnDefault("nextval('authors_author_id_seq')")
     @Column(name = "author_id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Size(max = 100)
-    @NotNull
+    @NotNull(message = "Name is required")
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 

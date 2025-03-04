@@ -2,8 +2,12 @@ package org.example.asbe.service.impl;
 
 import org.example.asbe.mapper.BookMapper;
 import org.example.asbe.model.dto.BookDTO;
+import org.example.asbe.model.entity.Author;
 import org.example.asbe.model.entity.Book;
+import org.example.asbe.model.entity.Category;
+import org.example.asbe.repository.AuthorRepository;
 import org.example.asbe.repository.BookRepository;
+import org.example.asbe.repository.CategoryRepository;
 import org.example.asbe.service.BookService;
 import org.example.asbe.util.CustomException;
 import org.example.asbe.util.MessageUtil;
@@ -15,12 +19,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class BookServiceImpl implements BookService {
     @Autowired
     private BookRepository repository;
+
+    @Autowired
+    private AuthorRepository authorRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private MessageUtil messageUtil;
@@ -46,12 +58,22 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public String addBook(Book book) {
+    public String addBook(BookDTO book, Set<Long> authorIds, Set<Long> categoryIds) {
         if(repository.findBookByTitle(book.getTitle()).isPresent()) {
 //            return messageUtil.getMessage("error.book.exists", book.getTitle());
             throw new CustomException(messageUtil.getMessage("error.book.exists", book.getTitle()));
         }
-        repository.save(book);
+        Book newBook = new Book();
+        newBook.setTitle(book.getTitle());
+        newBook.setDescription(book.getDescription());
+        newBook.setPrice(book.getPrice());
+        newBook.setStockQuantity(book.getStockQuantity());
+        Set<Author> authors = new HashSet<>(authorRepository.findAllById(authorIds));
+        Set<Category> categories = new HashSet<>(categoryRepository.findAllById(categoryIds));
+
+        newBook.setAuthors(authors);
+        newBook.setCategories(categories);
+        repository.save(newBook);
         return messageUtil.getMessage("success");
     }
 

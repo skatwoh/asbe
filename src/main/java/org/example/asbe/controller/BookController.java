@@ -1,6 +1,7 @@
 package org.example.asbe.controller;
 
 import jakarta.validation.Valid;
+import org.example.asbe.model.dto.BookDTO;
 import org.example.asbe.model.entity.Book;
 import org.example.asbe.service.impl.BookServiceImpl;
 import org.example.asbe.util.ResponseUtil;
@@ -30,14 +31,14 @@ public class BookController {
     }
 
     @PostMapping("/add-book")
-    public ResponseEntity<?> addNewBook(@RequestBody @Valid Book book, BindingResult result) {
+    public ResponseEntity<?> addNewBook(@RequestBody @Valid BookDTO book, BindingResult result) {
         if (result.hasErrors()) {
             Map<String, String> errorMessages = result.getFieldErrors().stream()
                     .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage, (oldValue, newValue) -> newValue));
 
             return ResponseUtil.response(HttpStatus.BAD_REQUEST, null, errorMessages, null);
         }
-        return ResponseUtil.response(HttpStatus.OK, service.addBook(book), null, null);
+        return ResponseUtil.response(HttpStatus.OK, service.addBook(book, book.authors, book.categories), null, null);
     }
 
     @PutMapping("/update-book/{id}")

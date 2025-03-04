@@ -56,11 +56,11 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Author updateAuthor(Author author, Integer id) {
-        if(repository.existsById(id)){
+        if(repository.existsById(Long.valueOf(id))){
             if(repository.existsByName(author.getName()) && repository.existsByBiography(author.getBiography())){
                 throw new CustomException(messageUtil.getMessage("author.exist"));
             }
-            Author existingAuthor = repository.findById(id).get();
+            Author existingAuthor = repository.findById(Long.valueOf(id)).get();
             existingAuthor.setName(author.getName());
             existingAuthor.setBiography(author.getBiography());
             return repository.save(author);
@@ -70,10 +70,10 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public String deleteAuthor(Integer id) {
-        if (!repository.existsById(id)) {
+        if (!repository.existsById(Long.valueOf(id))) {
             throw new CustomException(messageUtil.getMessage("error.author.notFound", id));
         }
-        repository.deleteById(id);
+        repository.deleteById(Long.valueOf(id));
         return messageUtil.getMessage("success.author.delete", id);
     }
 }
