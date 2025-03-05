@@ -18,6 +18,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Service
@@ -56,7 +58,10 @@ public class UserInfoService implements UserDetailsService {
             throw new CustomException(messageUtil.getMessage("error.email.exists", userInfo.getEmail()));
         }
         // Encode password before saving the user
+        userInfo.setFullName(userInfo.getUsername());
         userInfo.setPassword(encoder.encode(userInfo.getPassword()));
+        userInfo.setRole("ROLE_USER");
+        userInfo.setCreatedAt(LocalDateTime.now());
         repository.save(userInfo);
         return messageUtil.getMessage("success.user.added", userInfo.getUsername());
     }

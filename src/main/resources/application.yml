@@ -7,9 +7,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://dpg-cukpuo5umphs73bgffl0-a.singapore-postgres.render.com:5432/asdb_jmlu
-    username: asdb_jmlu_user
-    password: TXUW7CgVpdl3MIDTCTKmGDGb89c7udYp
+    url: jdbc:postgresql://skatwoh-skatwoh.h.aivencloud.com:12352/asdb
+    username: avnadmin
+    password: AVNS_MElDjw5uhelsPmOjCxd
     driver-class-name: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect

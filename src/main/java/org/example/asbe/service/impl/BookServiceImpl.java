@@ -1,7 +1,9 @@
 package org.example.asbe.service.impl;
 
 import org.example.asbe.mapper.BookMapper;
+import org.example.asbe.model.dto.AuthorDto;
 import org.example.asbe.model.dto.BookDTO;
+import org.example.asbe.model.dto.CategoryDto;
 import org.example.asbe.model.entity.Author;
 import org.example.asbe.model.entity.Book;
 import org.example.asbe.model.entity.Category;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -58,21 +61,24 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public String addBook(BookDTO book, Set<Long> authorIds, Set<Long> categoryIds) {
-        if(repository.findBookByTitle(book.getTitle()).isPresent()) {
-//            return messageUtil.getMessage("error.book.exists", book.getTitle());
+    public String addBook(BookDTO book, Set<AuthorDto> authors, Set<CategoryDto> categories) {
+        if (repository.findBookByTitle(book.getTitle()).isPresent()) {
             throw new CustomException(messageUtil.getMessage("error.book.exists", book.getTitle()));
         }
-        Book newBook = new Book();
-        newBook.setTitle(book.getTitle());
-        newBook.setDescription(book.getDescription());
-        newBook.setPrice(book.getPrice());
-        newBook.setStockQuantity(book.getStockQuantity());
-        Set<Author> authors = new HashSet<>(authorRepository.findAllById(authorIds));
-        Set<Category> categories = new HashSet<>(categoryRepository.findAllById(categoryIds));
 
-        newBook.setAuthors(authors);
-        newBook.setCategories(categories);
+        Book newBook = bookMapper.toEntity(book);
+
+        // Chuyển Set<AuthorDto> -> Set<Long>
+        Set<Long> authorIds = authors.stream().map(AuthorDto::getId).collect(Collectors.toSet());
+        Set<Author> authorEntities = new HashSet<>(authorRepository.findAllById(authorIds));
+
+        // Chuyển Set<CategoryDto> -> Set<Long>
+        Set<Long> categoryIds = categories.stream().map(CategoryDto::getId).collect(Collectors.toSet());
+        Set<Category> categoryEntities = new HashSet<>(categoryRepository.findAllById(categoryIds));
+
+        newBook.setAuthors(authorEntities);
+        newBook.setCategories(categoryEntities);
+
         repository.save(newBook);
         return messageUtil.getMessage("success");
     }
