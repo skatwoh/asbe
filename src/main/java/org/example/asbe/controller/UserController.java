@@ -44,7 +44,6 @@ public class UserController {
 
     @PostMapping("/addNewUser")
     public ResponseEntity<?> addNewUser(@RequestBody Userinfo userInfo) {
-        userInfo.setRole("ROLE_USER");
         return ResponseUtil.response(HttpStatus.OK, service.addUser(userInfo), null, null);
     }
 

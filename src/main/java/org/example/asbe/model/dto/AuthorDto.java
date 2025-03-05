@@ -16,7 +16,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthorDto implements Serializable {
-    Integer id;
+    Long id;
     @NotNull
     @Size(max = 100)
     String name;

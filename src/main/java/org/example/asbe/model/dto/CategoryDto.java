@@ -15,7 +15,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryDto implements Serializable {
-    Integer id;
+    Long id;
     @NotNull
     @Size(max = 50)
     String name;
