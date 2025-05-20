@@ -7,9 +7,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://skatwoh-skatwoh.h.aivencloud.com:12352/asdb
-    username: avnadmin
-    password: AVNS_MElDjw5uhelsPmOjCxd
+    url: jdbc:postgresql://ep-broad-block-a4snyxgf-pooler.us-east-1.aws.neon.tech:5432/neondb
+    username: neondb_owner
+    password: npg_pOeTmjZXb51H
     driver-class-name: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
