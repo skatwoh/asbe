@@ -74,8 +74,10 @@ public class UserController {
                 roles = Collections.singletonList("ROLE_USER");
             }
 
+            String email = service.getUserByUsername(authRequest.getUsername()).getEmail();
+
             // Nếu authenticate thành công, tiếp tục tạo token
-            String token = jwtService.generateToken(authRequest.getUsername(), roles);
+            String token = jwtService.generateToken(authRequest.getUsername(), email, roles);
             return ResponseUtil.success(token, "Token generated successfully!");
 
         } catch (BadCredentialsException ex) {

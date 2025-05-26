@@ -27,19 +27,20 @@ public class JwtService {
     private long jwtExpiration;
 
     // Generate token with given user name
-    public String generateToken(String userName, List<String> roles) {
+    public String generateToken(String userName, String email, List<String> roles) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userName, roles);
+        return createToken(claims, userName, email, roles);
     }
 
     // Create a JWT token with specified claims and subject (user name)
-    private String createToken(Map<String, Object> claims, String userName, List<String> roles) {
+    private String createToken(Map<String, Object> claims, String userName, String email, List<String> roles) {
         // Thêm vai trò vào claims
-        claims.put("roles", roles); // Hoặc có thể dùng "role" nếu bạn chỉ có một vai trò
+        claims.put("roles", roles);
+        claims.put("username", userName);
+        claims.put("email", email);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(userName)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration)) // Token valid for 30 minutes
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
