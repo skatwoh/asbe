@@ -33,10 +33,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String username = null;
 
         // Lấy token từ Cookie nếu có
-        String cookieHeader = request.getHeader("Cookie");
-        if (cookieHeader != null && cookieHeader.startsWith("token=")) {
-            token = cookieHeader.substring(6); // Cắt "token=" để lấy token
-        }
+//        String cookieHeader = request.getHeader("Cookie");
+//        if (cookieHeader != null && cookieHeader.startsWith("token=")) {
+//            token = cookieHeader.substring(6); // Cắt "token=" để lấy token
+//        }
 
         // Nếu không có token trong Cookie, thử lấy từ Authorization header
         if (token == null) {

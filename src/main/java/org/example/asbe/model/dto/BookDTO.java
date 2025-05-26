@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.asbe.model.entity.Author;
+import org.example.asbe.model.entity.Category;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -39,6 +41,6 @@ public class BookDTO {
     String bookCondition;
     Instant createdAt;
     Instant updatedAt;
-    public Set<AuthorDto> authors;
-    public Set<CategoryDto> categories;
+    public Set<Author> authors;
+    public Set<Category> categories;
 }

@@ -6,19 +6,19 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * DTO for {@link org.example.asbe.model.entity.Category}
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class CategoryDto implements Serializable {
+@Data
+public class CategoryDto {
     Long id;
     @NotNull
     @Size(max = 50)
     String name;
     String description;
-    Instant createdAt;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
+
 }

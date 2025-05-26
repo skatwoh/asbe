@@ -61,7 +61,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public String addBook(BookDTO book, Set<AuthorDto> authors, Set<CategoryDto> categories) {
+    public String addBook(BookDTO book, Set<Author> authors, Set<Category> categories) {
         if (repository.findBookByTitle(book.getTitle()).isPresent()) {
             throw new CustomException(messageUtil.getMessage("error.book.exists", book.getTitle()));
         }
@@ -69,11 +69,11 @@ public class BookServiceImpl implements BookService {
         Book newBook = bookMapper.toEntity(book);
 
         // Chuyển Set<AuthorDto> -> Set<Long>
-        Set<Long> authorIds = authors.stream().map(AuthorDto::getId).collect(Collectors.toSet());
+        Set<Long> authorIds = authors.stream().map(Author::getId).collect(Collectors.toSet());
         Set<Author> authorEntities = new HashSet<>(authorRepository.findAllById(authorIds));
 
         // Chuyển Set<CategoryDto> -> Set<Long>
-        Set<Long> categoryIds = categories.stream().map(CategoryDto::getId).collect(Collectors.toSet());
+        Set<Long> categoryIds = categories.stream().map(Category::getId).collect(Collectors.toSet());
         Set<Category> categoryEntities = new HashSet<>(categoryRepository.findAllById(categoryIds));
 
         newBook.setAuthors(authorEntities);
