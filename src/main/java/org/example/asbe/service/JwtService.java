@@ -55,8 +55,12 @@ public class JwtService {
     }
 
     // Extract the username from the token
+//    public String extractUsername(String token) {
+//        return extractClaim(token, Claims::getSubject);
+//    }
+
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractAllClaims(token).get("username", String.class);
     }
 
     // Extract the expiration date from the token
