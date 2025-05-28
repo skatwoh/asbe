@@ -39,7 +39,7 @@ app:
     tokenExpirationMsec: 864000000
     tokenRefreshExpirationMsec: 864000000
   slack:
-    webhookUrl: https://hooks.slack.com/services/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
+    webhookUrl: ok
 #logging:
 #  level:
 #    org.springframework.security: DEBUG
