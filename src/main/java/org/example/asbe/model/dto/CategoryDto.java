@@ -20,5 +20,4 @@ public class CategoryDto {
     String description;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
-
 }

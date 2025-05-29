@@ -14,7 +14,7 @@ public interface BookService {
 
     PagedResponse<BookDTO> listBook(int page, int size);
 
-    String addBook(BookDTO book, Set<Author> authors, Set<Category> categories);
+    String addBook(BookDTO book, Set<AuthorDto> authors, Set<CategoryDto> categories);
 
     Book updateBook(Book book, Integer id);
 
