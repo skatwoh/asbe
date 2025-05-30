@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,7 +66,6 @@ public class BookServiceImpl implements BookService {
         if (repository.findBookByTitle(book.getTitle()).isPresent()) {
             throw new CustomException(messageUtil.getMessage("error.book.exists", book.getTitle()));
         }
-
         Book newBook = bookMapper.toEntity(book);
 
         // Chuyển Set<AuthorDto> -> Set<Long>

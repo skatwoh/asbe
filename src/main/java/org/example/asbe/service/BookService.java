@@ -3,7 +3,9 @@ package org.example.asbe.service;
 import org.example.asbe.model.dto.AuthorDto;
 import org.example.asbe.model.dto.BookDTO;
 import org.example.asbe.model.dto.CategoryDto;
+import org.example.asbe.model.entity.Author;
 import org.example.asbe.model.entity.Book;
+import org.example.asbe.model.entity.Category;
 import org.example.asbe.util.dto.PagedResponse;
 
 import java.util.Set;

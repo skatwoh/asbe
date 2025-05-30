@@ -6,7 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.asbe.model.entity.Author;
+import org.example.asbe.model.entity.Category;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -17,7 +20,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookDTO {
+public class BookDTO implements Serializable {
     Integer id;
     @NotNull
     @Size(max = 255)
@@ -26,8 +29,7 @@ public class BookDTO {
     String isbn;
     LocalDate publicationDate;
     String description;
-    @NotNull
-    BigDecimal price;
+    Double price;
     BigDecimal discountPercent;
     @NotNull
     Integer stockQuantity;

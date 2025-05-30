@@ -15,6 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,10 +35,20 @@ public class CategoryServiceImpl implements CategoryService {
     public PagedResponse<CategoryDto> listCategory(int page, int size) {
         Pageable categoryable = PageRequest.of(page - 1, size, Sort.Direction.ASC, "id");
         Page<Category> entities = repository.findAll(categoryable);
-        List<CategoryDto> listCategoryDTOS =  categoryMapper.toDtoList(entities.getContent());
+        List<CategoryDto> listCategoryDTOS =  new ArrayList<>();
+
+        for (Category entity : entities) {
+            CategoryDto categoryDto = new CategoryDto();
+            categoryDto.setId(entity.getId());
+            categoryDto.setName(entity.getName());
+            categoryDto.setDescription(entity.getDescription());
+            categoryDto.setCreatedAt(entity.getCreatedAt());
+            categoryDto.setUpdatedAt(entity.getUpdatedAt());
+            listCategoryDTOS.add(categoryDto);
+        }
 
         return new PagedResponse<>(
-                categoryMapper.toDtoList(entities.getContent()),
+                listCategoryDTOS,
                 page,
                 size,
                 entities.getTotalElements(),
@@ -47,6 +60,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public String addCategory(Category category) {
+        LocalDateTime now = LocalDateTime.now();
+        category.setCreatedAt(now);
         repository.save(category);
         return messageUtil.getMessage("success");
     }
@@ -54,11 +69,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category updateCategory(Category category, Integer id) {
         if(repository.existsById(Long.valueOf(id))){
+            LocalDateTime now = LocalDateTime.now();
             Category existingAuthor = repository.findById(Long.valueOf(id)).get();
             existingAuthor.setName(category.getName());
             existingAuthor.setDescription(category.getDescription());
             existingAuthor.setParent(category.getParent());
-            return repository.save(category);
+            existingAuthor.setUpdatedAt(now);
+            return repository.save(existingAuthor);
         }
         return  null;
     }
