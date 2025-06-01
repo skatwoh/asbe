@@ -35,20 +35,9 @@ public class CategoryServiceImpl implements CategoryService {
     public PagedResponse<CategoryDto> listCategory(int page, int size) {
         Pageable categoryable = PageRequest.of(page - 1, size, Sort.Direction.ASC, "id");
         Page<Category> entities = repository.findAll(categoryable);
-        List<CategoryDto> listCategoryDTOS =  new ArrayList<>();
-
-        for (Category entity : entities) {
-            CategoryDto categoryDto = new CategoryDto();
-            categoryDto.setId(entity.getId());
-            categoryDto.setName(entity.getName());
-            categoryDto.setDescription(entity.getDescription());
-            categoryDto.setCreatedAt(entity.getCreatedAt());
-            categoryDto.setUpdatedAt(entity.getUpdatedAt());
-            listCategoryDTOS.add(categoryDto);
-        }
 
         return new PagedResponse<>(
-                listCategoryDTOS,
+                categoryMapper.toDtoList(entities.getContent()),
                 page,
                 size,
                 entities.getTotalElements(),
