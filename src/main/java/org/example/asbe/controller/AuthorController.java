@@ -2,6 +2,7 @@ package org.example.asbe.controller;
 
 import jakarta.validation.Valid;
 import org.example.asbe.model.entity.Author;
+import org.example.asbe.model.entity.Category;
 import org.example.asbe.service.impl.AuthorServiceImpl;
 import org.example.asbe.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,13 @@ public class AuthorController {
     public ResponseEntity<?> listAuthor(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        return ResponseUtil.success(service.listAuthor(page, size), "List author successfully!");
+        return ResponseUtil.success(authorServiceImpl.listAuthor(page, size), "List author successfully!");
+    }
+
+    @PostMapping("/filter-list-author")
+    public ResponseEntity<?> filterListAuthor(@RequestBody Author request) {
+        String name = request.getName();
+        return ResponseUtil.success(authorServiceImpl.filterListAuthor(name), "List author successfully!");
     }
 
     @PostMapping("/add-author")
