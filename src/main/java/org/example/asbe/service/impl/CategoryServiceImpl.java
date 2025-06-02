@@ -48,6 +48,42 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public PagedResponse<CategoryDto> filterListCategory(String name) {
+//        List<Category> entities = repository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+        List<Category> entities;
+
+        if (name != null && !name.trim().isEmpty()) {
+            // Tìm kiếm theo name
+            entities = repository.findByNameContainingIgnoreCaseOrderByIdAsc(name);
+        } else {
+            // Lấy tất cả nếu không có từ khóa
+            entities = repository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+        }
+
+        List<CategoryDto> listCategoryDTOS = new ArrayList<>();
+
+        for (Category entity : entities) {
+            CategoryDto categoryDto = new CategoryDto();
+            categoryDto.setId(entity.getId());
+            categoryDto.setName(entity.getName());
+            categoryDto.setDescription(entity.getDescription());
+//            categoryDto.setCreatedAt(entity.getCreatedAt());
+//            categoryDto.setUpdatedAt(entity.getUpdatedAt());
+            listCategoryDTOS.add(categoryDto);
+        }
+
+        return new PagedResponse<>(
+                listCategoryDTOS,
+                1, // page (bạn có thể set là 1 nếu không dùng phân trang)
+                listCategoryDTOS.size(), // size (số phần tử trong list)
+                listCategoryDTOS.size(), // totalElements
+                1, // totalPages
+                true, // isLast (vì không phân trang, luôn là trang cuối)
+                Sort.by(Sort.Direction.ASC, "id").toString()
+        );
+    }
+
+    @Override
     public String addCategory(Category category) {
         LocalDateTime now = LocalDateTime.now();
         category.setCreatedAt(now);

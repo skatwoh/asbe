@@ -2,7 +2,9 @@ package org.example.asbe.service.impl;
 
 import org.example.asbe.mapper.AuthorMapper;
 import org.example.asbe.model.dto.AuthorDto;
+import org.example.asbe.model.dto.CategoryDto;
 import org.example.asbe.model.entity.Author;
+import org.example.asbe.model.entity.Category;
 import org.example.asbe.repository.AuthorRepository;
 import org.example.asbe.service.AuthorService;
 import org.example.asbe.util.CustomException;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -42,6 +45,38 @@ public class AuthorServiceImpl implements AuthorService {
                 entities.getTotalPages(),
                 entities.isLast(),
                 entities.getSort().toString()
+        );
+    }
+
+    public PagedResponse<AuthorDto> filterListAuthor(String name) {
+        List<Author> entities;
+
+        if (name != null && !name.trim().isEmpty()) {
+            // Tìm kiếm theo name
+            entities = repository.findByNameContainingIgnoreCaseOrderById(name);
+        } else {
+            // Lấy tất cả nếu không có từ khóa
+            entities = repository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+        }
+
+        List<AuthorDto> listAuthorDTOS = new ArrayList<>();
+
+        for (Author entity : entities) {
+            AuthorDto authorDto = new AuthorDto();
+            authorDto.setId(entity.getId());
+            authorDto.setName(entity.getName());
+            authorDto.setBiography(entity.getBiography());
+            listAuthorDTOS.add(authorDto);
+        }
+
+        return new PagedResponse<>(
+                listAuthorDTOS,
+                1, // page (bạn có thể set là 1 nếu không dùng phân trang)
+                listAuthorDTOS.size(), // size (số phần tử trong list)
+                listAuthorDTOS.size(), // totalElements
+                1, // totalPages
+                true, // isLast (vì không phân trang, luôn là trang cuối)
+                Sort.by(Sort.Direction.ASC, "id").toString()
         );
     }
 

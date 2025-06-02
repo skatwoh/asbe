@@ -29,6 +29,12 @@ public class CategoryController {
         return ResponseUtil.success(categoryServiceImpl.listCategory(page, size), "List category successfully!");
     }
 
+    @PostMapping("/filter-list-category")
+    public ResponseEntity<?> filterListCategory(@RequestBody Category request) {
+        String name = request.getName();
+        return ResponseUtil.success(categoryServiceImpl.filterListCategory(name), "List category successfully!");
+    }
+
     @PostMapping("/add-category")
     public ResponseEntity<?> addNewCategory(@RequestBody @Valid Category category, BindingResult result) {
         if (result.hasErrors()) {

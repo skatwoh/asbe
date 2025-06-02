@@ -7,9 +7,12 @@ import org.example.asbe.util.dto.PagedResponse;
 public interface CategoryService {
     PagedResponse<CategoryDto> listCategory(int page, int size);
 
+    PagedResponse<CategoryDto> filterListCategory(String name);
+
     String addCategory(Category category);
 
     Category updateCategory(Category category, Integer id);
 
     String deleteCategory(Integer id);
+
 }
