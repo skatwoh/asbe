@@ -40,6 +40,11 @@ app:
     tokenRefreshExpirationMsec: 864000000
   slack:
     webhookUrl: https://hooks.slack.com/services/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
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/index.html
+    operations-sorter: method
 #logging:
 #  level:
 #    org.springframework.security: DEBUG
