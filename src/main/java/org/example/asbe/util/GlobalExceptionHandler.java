@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<?> handleCustomException(CustomException ex) {
         return ResponseEntity
-                .status(HttpStatus.CONFLICT) // hoặc HttpStatus.BAD_REQUEST tùy ngữ cảnh
+                .status(HttpStatus.BAD_REQUEST)
                 .body(Map.of(
                         "error", ex.getMessage()
                 ));
