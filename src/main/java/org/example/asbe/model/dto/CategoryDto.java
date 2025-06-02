@@ -11,7 +11,10 @@ import java.time.LocalDateTime;
 /**
  * DTO for {@link org.example.asbe.model.entity.Category}
  */
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CategoryDto {
     Long id;
     @NotNull

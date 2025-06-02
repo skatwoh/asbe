@@ -35,10 +35,18 @@ public class AuthorServiceImpl implements AuthorService {
     public PagedResponse<AuthorDto> listAuthor(int page, int size) {
         Pageable bookable = PageRequest.of(page - 1, size, Sort.Direction.ASC, "id");
         Page<Author> entities = repository.findAll(bookable);
-        List<AuthorDto> listAuthorDTOS =  authorMapper.toDtoList(entities.getContent());
+        List<AuthorDto> listAuthorDTOS =  new ArrayList<>();
+        for (Author entity : entities) {
+            AuthorDto authorDto = new AuthorDto();
+            authorDto.setId(entity.getId());
+            authorDto.setName(entity.getName());
+            authorDto.setBiography(entity.getBiography());
+            authorDto.setCreatedAt(entity.getCreatedAt());
+            listAuthorDTOS.add(authorDto);
+        }
 
         return new PagedResponse<>(
-                authorMapper.toDtoList(entities.getContent()),
+                listAuthorDTOS,
                 page,
                 size,
                 entities.getTotalElements(),

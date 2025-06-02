@@ -4,7 +4,7 @@ import org.example.asbe.model.dto.AuthorDto;
 import org.example.asbe.model.entity.Author;
 import org.mapstruct.*;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedSourcePolicy = ReportingPolicy.ERROR, unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.ERROR, unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface AuthorMapper extends EntityMapper<AuthorDto, Author> {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Author partialUpdate(AuthorDto authorDto, @MappingTarget Author author);

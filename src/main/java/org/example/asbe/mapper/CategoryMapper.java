@@ -4,7 +4,8 @@ import org.example.asbe.model.dto.CategoryDto;
 import org.example.asbe.model.entity.Category;
 import org.mapstruct.*;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface CategoryMapper extends EntityMapper<CategoryDto, Category> {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Category partialUpdate(CategoryDto categoryDto, @MappingTarget Category category);

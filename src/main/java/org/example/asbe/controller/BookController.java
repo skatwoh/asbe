@@ -3,7 +3,6 @@ package org.example.asbe.controller;
 import jakarta.validation.Valid;
 import org.example.asbe.model.dto.BookDTO;
 import org.example.asbe.model.entity.Book;
-import org.example.asbe.model.entity.Category;
 import org.example.asbe.service.impl.AuthorServiceImpl;
 import org.example.asbe.service.impl.BookServiceImpl;
 import org.example.asbe.util.ResponseUtil;
@@ -32,12 +31,6 @@ public class BookController {
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
         return ResponseUtil.success(service.listBook(page, size), "List user successfully!");
-    }
-
-    @PostMapping("/filter-list-category")
-    public ResponseEntity<?> filterListAuthor(@RequestBody Category request) {
-        String name = request.getName();
-        return ResponseUtil.success(authorServiceImpl.filterListAuthor(name), "List author successfully!");
     }
 
     @PostMapping("/add-book")
