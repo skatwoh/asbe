@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Map;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -16,12 +18,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<?> handleCustomException(CustomException ex) {
-        return ResponseUtil.error(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT) // hoặc HttpStatus.BAD_REQUEST tùy ngữ cảnh
+                .body(Map.of(
+                        "error", ex.getMessage()
+                ));
     }
 
-
+    // Optionally, handle all uncaught exceptions
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleGenericException(Exception ex) {
-        return ResponseUtil.error(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+    public ResponseEntity<?> handleAll(Exception ex) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of(
+                        "error", "Lỗi hệ thống",
+                        "details", ex.getMessage()
+                ));
     }
 }

@@ -20,24 +20,23 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookDTO implements Serializable {
+public class BookDTO {
     Integer id;
-    @NotNull
-    @Size(max = 255)
+
     String title;
-    @Size(max = 13)
+
     String isbn;
     LocalDate publicationDate;
     String description;
     Double price;
     BigDecimal discountPercent;
-    @NotNull
+
     Integer stockQuantity;
     Integer pageCount;
-    @Size(max = 50)
+
     String language;
     Boolean isRare;
-    @Size(max = 50)
+
     String bookCondition;
     Instant createdAt;
     Instant updatedAt;
