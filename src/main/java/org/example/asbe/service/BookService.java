@@ -20,4 +20,6 @@ public interface BookService {
 
     String deleteBook(Integer id);
 
+    Book getBook(Integer id);
+
 }

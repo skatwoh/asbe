@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -106,5 +107,16 @@ public class BookServiceImpl implements BookService {
         }
         repository.deleteById(id);
         return messageUtil.getMessage("success.book.delete", id);
+    }
+
+    @Override
+    public Book getBook(Integer id) {
+        Optional<Book> optionalBook = repository.findById(id);
+        if (optionalBook.isPresent()) {
+            return optionalBook.get();
+        }
+        else {
+            throw new CustomException(messageUtil.getMessage("error.book.notFound", id));
+        }
     }
 }
