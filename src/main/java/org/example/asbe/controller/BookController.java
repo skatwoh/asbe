@@ -3,6 +3,7 @@ package org.example.asbe.controller;
 import jakarta.validation.Valid;
 import org.example.asbe.model.dto.BookDTO;
 import org.example.asbe.model.entity.Book;
+import org.example.asbe.service.BookService;
 import org.example.asbe.service.impl.AuthorServiceImpl;
 import org.example.asbe.service.impl.BookServiceImpl;
 import org.example.asbe.util.ResponseUtil;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/book")
 public class BookController {
     @Autowired
-    private BookServiceImpl service;
+    private BookService service;
     @Autowired
     private BookServiceImpl bookServiceImpl;
     @Autowired
@@ -52,5 +53,15 @@ public class BookController {
     @DeleteMapping("/delete-book/{id}")
     public ResponseEntity<?> deleteBook(@PathVariable Integer id) {
         return ResponseUtil.success(bookServiceImpl.deleteBook(id), "Delete successfully!");
+    }
+
+    @GetMapping("/get-book/{id}")
+    public ResponseEntity<Book> getBook(@PathVariable Integer id) {
+        Book book = service.getBook(id);
+        if (book != null) {
+            return ResponseEntity.ok(book);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
