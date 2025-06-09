@@ -12,7 +12,7 @@ import java.util.Set;
 
 public interface BookService {
 
-    PagedResponse<BookDTO> listBook(int page, int size);
+    PagedResponse<BookDTO> listBook(int page, int size, String category);
 
     String addBook(BookDTO book, Set<AuthorDto> authors, Set<CategoryDto> categories);
 

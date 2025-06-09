@@ -30,8 +30,10 @@ public class BookController {
     @GetMapping("/list-book")
     public ResponseEntity<?> listBook(
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
-        return ResponseUtil.success(service.listBook(page, size), "List user successfully!");
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "category", defaultValue = "") String category)
+    {
+        return ResponseUtil.success(service.listBook(page, size, category), "List books successfully!");
     }
 
     @PostMapping("/add-book")

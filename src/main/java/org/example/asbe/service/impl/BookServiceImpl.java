@@ -17,8 +17,8 @@ import org.example.asbe.util.dto.PagedResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -46,19 +46,26 @@ public class BookServiceImpl implements BookService {
     private BookMapper bookMapper;
 
     @Override
-    public PagedResponse<BookDTO> listBook(int page, int size) {
-        Pageable bookable = PageRequest.of(page - 1, size, Sort.Direction.ASC, "id");
-        Page<Book> entities = repository.findAll(bookable);
-        List<BookDTO> listBookDTOS =  bookMapper.toDtoList(entities.getContent());
+    public PagedResponse<BookDTO> listBook(int page, int size, String category) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.Direction.ASC, category.isEmpty() ? "id" : "book_id");
+        Page<Book> bookPage;
+
+        if (category.trim().isEmpty()) {
+            bookPage = repository.findAll(pageable);
+        } else {
+            bookPage = repository.findBooksByCategoryNameContaining(category, pageable);
+        }
+
+        List<BookDTO> bookDTOs = bookMapper.toDtoList(bookPage.getContent());
 
         return new PagedResponse<>(
-                bookMapper.toDtoList(entities.getContent()),
+                bookDTOs,
                 page,
                 size,
-                entities.getTotalElements(),
-                entities.getTotalPages(),
-                entities.isLast(),
-                entities.getSort().toString()
+                bookPage.getTotalElements(),
+                bookPage.getTotalPages(),
+                bookPage.isLast(),
+                bookPage.getSort().toString()
         );
     }
 
