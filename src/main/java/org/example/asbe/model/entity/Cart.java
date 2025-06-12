@@ -36,4 +36,12 @@ public class Cart {
     @Column(name = "created_at")
     private Instant createdAt;
 
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @ColumnDefault("false")
+    @Column(name = "status")
+    private Boolean status;
+
 }
