@@ -27,17 +27,18 @@ public class JwtService {
     private long jwtExpiration;
 
     // Generate token with given user name
-    public String generateToken(String userName, String email, List<String> roles) {
+    public String generateToken(String userName, String email, List<String> roles, Integer userId) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userName, email, roles);
+        return createToken(claims, userName, email, roles, userId);
     }
 
     // Create a JWT token with specified claims and subject (user name)
-    private String createToken(Map<String, Object> claims, String userName, String email, List<String> roles) {
+    private String createToken(Map<String, Object> claims, String userName, String email, List<String> roles, Integer userId) {
         // Thêm vai trò vào claims
         claims.put("roles", roles);
         claims.put("username", userName);
         claims.put("email", email);
+        claims.put("id", userId);
 
         return Jwts.builder()
                 .setClaims(claims)

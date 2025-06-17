@@ -76,8 +76,10 @@ public class UserController {
 
             String email = service.getUserByUsername(authRequest.getUsername()).getEmail();
 
+            Integer id = service.getUserByUsername(authRequest.getUsername()).getId();
+
             // Nếu authenticate thành công, tiếp tục tạo token
-            String token = jwtService.generateToken(authRequest.getUsername(), email, roles);
+            String token = jwtService.generateToken(authRequest.getUsername(), email, roles, id);
             return ResponseUtil.success(token, "Token generated successfully!");
 
         } catch (BadCredentialsException ex) {
