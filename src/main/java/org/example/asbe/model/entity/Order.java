@@ -9,6 +9,9 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -64,5 +67,12 @@ public class Order {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
     private Instant updatedAt;
+
+//    @OneToMany(mappedBy = "book_id")
+//    private List<Book> books;
+
+    @OneToMany(mappedBy = "order")
+    private Set<Orderitem> orderItems = new LinkedHashSet<>();
+
 
 }
