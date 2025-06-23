@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.asbe.model.entity.Book;
+import org.example.asbe.model.entity.Userinfo;
 
 import java.time.Instant;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -21,7 +22,15 @@ public class CartDTO {
 
     Instant updatedAt;
 
-    public Set<UserDTO> user;
+    Integer userId;
 
-    public Set<BookDTO> book;
+    Integer bookId;
+
+    String username;
+
+    String bookName;
+
+    BookDTO book;
+    
+    UserDTO user;
 }
