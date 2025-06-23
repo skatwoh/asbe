@@ -1,5 +1,7 @@
 package org.example.asbe.repository;
 
+import org.example.asbe.model.dto.BookDTO;
+import org.example.asbe.model.dto.UserDTO;
 import org.example.asbe.model.entity.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;

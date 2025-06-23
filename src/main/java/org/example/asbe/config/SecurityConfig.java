@@ -53,7 +53,7 @@ public class SecurityConfig extends OncePerRequestFilter {
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless APIs
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui-custom.html").permitAll()
+                        .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui-custom.html","/book/list-book").permitAll()
                         .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
                         .requestMatchers("/auth/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated() // Protect all other endpoints

@@ -17,8 +17,15 @@ public class CartController {
     @Autowired
     private CartServiceImpl cartServiceImpl;
 
+    @GetMapping("/list-cart")
+    public ResponseEntity<?> listCart(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+        return ResponseUtil.success(cartServiceImpl.listCart(page, size), "List cart successfully!");
+    }
+
     @PostMapping("/add-to-cart")
-    public ResponseEntity<?> addBookToCart(@RequestBody List<BookCartSdi> bookCartSdi) {
+    public ResponseEntity<?> addBookToCart(@RequestBody BookCartSdi bookCartSdi) {
         try {
             String message = cartServiceImpl.addBookToCart(bookCartSdi);
             return ResponseUtil.response(HttpStatus.OK, message, null, null);

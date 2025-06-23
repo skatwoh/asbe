@@ -32,6 +32,7 @@ public class BookDTO {
     BigDecimal discountPercent;
 
     Integer stockQuantity;
+    Integer quantity;
     Integer pageCount;
 
     String language;
