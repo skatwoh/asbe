@@ -24,9 +24,9 @@ public class OrderController {
     public ResponseEntity<?> save(@RequestBody OrderDTO order) {
         try {
             String message = orderServiceImpl.createOrderFromCart(order);
-            return ResponseUtil.response(HttpStatus.OK, message, null, null);
+            return ResponseEntity.ok(message);
         } catch (Exception e) {
-            return ResponseUtil.response(HttpStatus.BAD_REQUEST, null, Map.of("error", "Invalid input"), null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 }

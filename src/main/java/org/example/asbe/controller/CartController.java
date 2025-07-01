@@ -33,4 +33,9 @@ public class CartController {
             return ResponseUtil.response(HttpStatus.BAD_REQUEST, null, Map.of("error", "Invalid input"), null);
         }
     }
+
+    @DeleteMapping("/delete-book-from-cart/{id}")
+    public ResponseEntity<?> deleteBookFromCart(@PathVariable Long id) {
+        return ResponseUtil.success(cartServiceImpl.deleteBookFromCart(id), "Delete successfully!");
+    }
 }

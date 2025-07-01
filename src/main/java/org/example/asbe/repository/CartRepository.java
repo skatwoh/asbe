@@ -16,17 +16,21 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     List<Cart> findByUserIdAndStatus(Integer userId, Boolean status);
 
     @Query(value = """
-    SELECT c.cart_id AS cart_id,
-           c.quantity AS quantity,
-           u.user_id AS user_id,
-           u.name AS user_name,
-           b.book_id AS book_id,
-           b.title AS book_title
-    FROM carts c
-    JOIN users u ON c.user_id = u.user_id
-    JOIN books b ON c.book_id = b.book_id
-    """, nativeQuery = true)
-    List<Object[]> findAllCartWithUserAndBook();
+            SELECT c.cart_id AS cart_id,
+                   c.quantity AS quantity,
+                   u.user_id AS user_id,
+                   u.username AS user_name,
+                   b.book_id AS book_id,
+                   b.title AS book_title,
+                   c.created_at AS created_at,
+                   c.updated_at AS updated_at,
+                   c.status AS status
+            FROM cart c
+            JOIN userinfo u ON c.user_id = u.user_id
+            JOIN books b ON c.book_id = b.book_id
+            WHERE c.status = false AND c.user_id = :userId AND c.book_id = :bookId
+            """, nativeQuery = true)
+    Optional<Cart> findAllCartWithUserAndBook(Integer userId, Integer bookId);
 
 }
 

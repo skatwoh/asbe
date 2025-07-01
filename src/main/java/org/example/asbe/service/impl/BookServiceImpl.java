@@ -56,8 +56,11 @@ public class BookServiceImpl implements BookService {
             bookPage = repository.findBooksByCategoryNameContaining(category, pageable);
         }
 
-        List<BookDTO> bookDTOs = bookMapper.toDtoList(bookPage.getContent());
-
+        List<BookDTO> bookDTOs = bookMapper.toDtoList(
+                bookPage.getContent().stream()
+                        .filter(book -> book.getStockQuantity() > 0)
+                        .collect(Collectors.toList())
+        );
         return new PagedResponse<>(
                 bookDTOs,
                 page,

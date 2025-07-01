@@ -11,4 +11,6 @@ public interface CartService {
     String addBookToCart(BookCartSdi bookCartSdi);
 
     PagedResponse<CartDTO> listCart(int page, int size);
+
+    String deleteBookFromCart(Long id);
 }
