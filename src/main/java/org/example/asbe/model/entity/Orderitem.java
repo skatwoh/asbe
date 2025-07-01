@@ -15,14 +15,12 @@ public class Orderitem {
     @EmbeddedId
     private OrderitemId id;
 
-    @MapsId("orderId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "order_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "order_id", insertable = false, updatable = false)
     private Order order;
 
-    @MapsId("bookId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "book_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "book_id", insertable = false, updatable = false)
     private Book book;
 
     @NotNull

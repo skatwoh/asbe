@@ -2,13 +2,11 @@ package org.example.asbe.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
-import org.example.asbe.model.dto.AuthorDto;
-import org.example.asbe.model.dto.OrderDTO;
-import org.example.asbe.model.dto.OrderItemDTO;
-import org.example.asbe.model.dto.UserDTO;
+import org.example.asbe.model.dto.*;
 import org.example.asbe.model.entity.*;
 import org.example.asbe.repository.*;
 import org.example.asbe.service.OrderService;
+import org.example.asbe.util.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,12 +39,15 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public String createOrderFromCart(OrderDTO orderInput) {
         try {
+            log.info("===> Bắt đầu tạo Order từ DTO");
+
             Order order = new Order();
             if (orderInput.getUserId() != null) {
                 Userinfo user = userInfoRepository.findById(orderInput.getUserId())
                         .orElseThrow(() -> new RuntimeException("User not found with id: " + orderInput.getUserId()));
                 order.setUser(user);
             }
+
             order.setTotalAmount(orderInput.getTotalAmount());
             order.setShippingAddress(orderInput.getShippingAddress());
             order.setShippingPhone(orderInput.getShippingPhone());
@@ -56,33 +57,46 @@ public class OrderServiceImpl implements OrderService {
             order.setPaymentStatus(orderInput.getPaymentStatus() != null ? orderInput.getPaymentStatus() : "unpaid");
             order.setCreatedAt(Instant.now());
             order.setUpdatedAt(Instant.now());
+
             Order savedOrder = orderRepository.save(order);
+            log.info("===> Đã lưu Order ID = {}", savedOrder.getId());
+
             if (orderInput.getOrderItems() != null && !orderInput.getOrderItems().isEmpty()) {
                 Set<Orderitem> orderItems = new LinkedHashSet<>();
 
-                for (OrderItemDTO orderItemDTO : orderInput.getOrderItems()) {
+                for (OrderItemDTO itemDTO : orderInput.getOrderItems()) {
+                    Book book = bookRepository.findById(itemDTO.getBookId())
+                            .orElseThrow(() -> new RuntimeException("Book not found with id: " + itemDTO.getBookId()));
 
-                    Book book = bookRepository.findById(orderItemDTO.getId())
-                            .orElseThrow(() -> new RuntimeException("Book not found with id: " + orderItemDTO.getId()));
+                    OrderitemId id = new OrderitemId();
+                    id.setOrderId(savedOrder.getId());
+                    id.setBookId(itemDTO.getBookId());
 
-                    Orderitem orderItem = new Orderitem();
-                    OrderitemId orderItemId = new OrderitemId();
-                    orderItemId.setOrderId(savedOrder.getId());
-                    orderItemId.setBookId(orderItemDTO.getId());
-                    orderItem.setId(orderItemId);
-                    orderItem.setOrder(savedOrder);
-                    orderItem.setBook(book);
-                    orderItem.setQuantity(orderItemDTO.getQuantity());
-                    orderItem.setPrice(orderItemDTO.getPrice());
-                    orderItems.add(orderItem);
+                    Orderitem item = new Orderitem();
+                    item.setId(id);
+                    item.setOrder(savedOrder);
+                    item.setBook(book);
+                    item.setQuantity(itemDTO.getQuantity());
+                    item.setPrice(itemDTO.getPrice());
+                    orderItems.add(item);
+                    Cart cart = cartRepository.findAllCartWithUserAndBook(orderInput.getUserId(),id.getBookId())
+                            .orElseThrow(() -> new RuntimeException("Cart not found"));
+                    cart.setStatus(true);
+                    book.setStockQuantity(book.getStockQuantity() - itemDTO.getQuantity());
+                    bookRepository.save(book);
+                    cartRepository.save(cart);
                 }
+
                 orderItemRepository.saveAll(orderItems);
+                log.info("===> Đã lưu {} OrderItems", orderItems.size());
             }
 
-            return "Thành công";
+            return savedOrder.getId().toString();
 
         } catch (Exception e) {
-            throw new RuntimeException("Error saving order: " + e.getMessage(), e);
+            log.error("Lỗi khi tạo đơn hàng: {}", e.getMessage(), e);
+            throw new CustomException("Lỗi khi tạo đơn hàng: " + e.getMessage());
         }
     }
+
 }

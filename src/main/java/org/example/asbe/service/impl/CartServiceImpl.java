@@ -10,6 +10,7 @@ import org.example.asbe.model.entity.*;
 import org.example.asbe.model.sdi.BookCartSdi;
 import org.example.asbe.repository.*;
 import org.example.asbe.service.CartService;
+import org.example.asbe.util.CustomException;
 import org.example.asbe.util.MessageUtil;
 import org.example.asbe.util.dto.PagedResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,20 +83,22 @@ public class CartServiceImpl implements CartService {
     public PagedResponse<CartDTO> listCart(int page, int size) {
         Pageable cartable = PageRequest.of(page - 1, size, Sort.Direction.ASC, "id");
         Page<Cart> entities = cartRepository.findAll(cartable);
-        List<CartDTO> listCartDTOS =  new ArrayList<>();
+        List<CartDTO> listCartDTOS = new ArrayList<>();
         for (Cart entity : entities) {
-            UserDTO user = userRepository.getUserinfoById(entity.getUser().getId()).orElse(null);
-            Book book = bookRepository.findById(entity.getBook().getId()).orElse(null);
-            CartDTO cartDTO = new CartDTO();
-            cartDTO.setId(entity.getId());
-            cartDTO.setUsername(user.getUsername());
-            cartDTO.setUser(user);
-            cartDTO.setUserId(entity.getUser().getId());
-            cartDTO.setBookName(book.getTitle());
-            cartDTO.setBook(bookMapper.toDto(book));
-            cartDTO.setBookId(entity.getBook().getId());
-            cartDTO.setQuantity(entity.getQuantity());
-            listCartDTOS.add(cartDTO);
+            if(!Boolean.TRUE.equals(entity.getStatus())){
+                UserDTO user = userRepository.getUserinfoById(entity.getUser().getId()).orElse(null);
+                Book book = bookRepository.findById(entity.getBook().getId()).orElse(null);
+                CartDTO cartDTO = new CartDTO();
+                cartDTO.setId(entity.getId());
+                cartDTO.setUsername(user.getUsername());
+                cartDTO.setUser(user);
+                cartDTO.setUserId(entity.getUser().getId());
+                cartDTO.setBookName(book.getTitle());
+                cartDTO.setBook(bookMapper.toDto(book));
+                cartDTO.setBookId(entity.getBook().getId());
+                cartDTO.setQuantity(entity.getQuantity());
+                listCartDTOS.add(cartDTO);
+            }
         }
 
         return new PagedResponse<>(
@@ -109,38 +112,48 @@ public class CartServiceImpl implements CartService {
         );
     }
 
-@Override
-public String addBookToCart(BookCartSdi bookCartSdi) {
-    Userinfo user = userRepository.findById(bookCartSdi.getUserId()).orElse(null);
-    Book book = bookRepository.findById(bookCartSdi.getBookId()).orElse(null);
-    // Kiểm tra xem người dùng đã thêm sách này vào giỏ chưa
-    Optional<Cart> existingCartItem = cartRepository.findByUserIdAndBookId(bookCartSdi.getUserId(),  bookCartSdi.getBookId());
-    Integer checkQuantity = 0;
-    Cart cart;
-    if (existingCartItem.isPresent()) {
-        cart = existingCartItem.get();
-        checkQuantity = cart.getQuantity() - bookCartSdi.getQuantity();
-        cart.setQuantity(bookCartSdi.getQuantity());
-        cart.setUpdatedAt(Instant.now());
-    } else {
-        cart = new Cart();
-        checkQuantity = -bookCartSdi.getQuantity();
-        cart.setUser(user);
-        cart.setBook(book);
-        cart.setQuantity(bookCartSdi.getQuantity());
-        cart.setCreatedAt(Instant.now());
-        cart.setUpdatedAt(Instant.now());
-        cart.setStatus(false);
-    }
-    try {
-        cartRepository.save(cart);
-        book.setStockQuantity(book.getStockQuantity() + checkQuantity);
+    @Override
+    public String addBookToCart(BookCartSdi bookCartSdi) {
+        Userinfo user = userRepository.findById(bookCartSdi.getUserId()).orElse(null);
+        Book book = bookRepository.findById(bookCartSdi.getBookId()).orElse(null);
+        // Kiểm tra xem người dùng đã thêm sách này vào giỏ chưa
+        Optional<Cart> existingCartItem = cartRepository.findAllCartWithUserAndBook(bookCartSdi.getUserId(), bookCartSdi.getBookId());
+        Integer checkQuantity = 0;
+        Cart cart;
+        if (existingCartItem.isPresent() && !Boolean.TRUE.equals(existingCartItem.get().getStatus())) {
+            cart = existingCartItem.get();
+            checkQuantity = cart.getQuantity() - bookCartSdi.getQuantity();
+            cart.setQuantity(bookCartSdi.getQuantity());
+            cart.setUpdatedAt(Instant.now());
+        } else {
+            cart = new Cart();
+            checkQuantity = -bookCartSdi.getQuantity();
+            cart.setUser(user);
+            cart.setBook(book);
+            cart.setQuantity(bookCartSdi.getQuantity());
+            cart.setCreatedAt(Instant.now());
+            cart.setUpdatedAt(Instant.now());
+            cart.setStatus(false);
+        }
+        try {
+            cartRepository.save(cart);
+            book.setStockQuantity(book.getStockQuantity() + checkQuantity);
 //        bookRepository.save(book);
-        return messageUtil.getMessage("success.cart.add");
+            return messageUtil.getMessage("success.cart.add");
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return null;
     }
-    catch (Exception e) {
-        log.error(e.getMessage(),e);
+
+    @Override
+    public String deleteBookFromCart(Long id) {
+        if (!cartRepository.existsById(id)) {
+            throw new CustomException(messageUtil.getMessage("error.book.notFound", id));
+        }
+        cartRepository.deleteById(id);
+        return messageUtil.getMessage("success.book.delete", id);
     }
-    return  null;
 }
-}
+
+
