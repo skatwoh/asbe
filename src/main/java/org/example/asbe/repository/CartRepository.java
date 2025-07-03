@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface CartRepository extends JpaRepository<Cart, Long> {
     Optional<Cart> findByUserIdAndBookId(Integer userId, Integer bookId);
 
+    Optional<Cart> findByUserIdAndBookIdAndStatus(Integer userId, Integer bookId, Boolean status);
+
     List<Cart> findByUserIdAndStatus(Integer userId, Boolean status);
 
     @Query(value = """

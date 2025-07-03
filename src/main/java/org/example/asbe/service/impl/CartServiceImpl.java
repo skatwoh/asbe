@@ -117,7 +117,7 @@ public class CartServiceImpl implements CartService {
         Userinfo user = userRepository.findById(bookCartSdi.getUserId()).orElse(null);
         Book book = bookRepository.findById(bookCartSdi.getBookId()).orElse(null);
         // Kiểm tra xem người dùng đã thêm sách này vào giỏ chưa
-        Optional<Cart> existingCartItem = cartRepository.findAllCartWithUserAndBook(bookCartSdi.getUserId(), bookCartSdi.getBookId());
+        Optional<Cart> existingCartItem = cartRepository.findByUserIdAndBookIdAndStatus(bookCartSdi.getUserId(), bookCartSdi.getBookId(), bookCartSdi.getStatus());
         Integer checkQuantity = 0;
         Cart cart;
         if (existingCartItem.isPresent() && !Boolean.TRUE.equals(existingCartItem.get().getStatus())) {

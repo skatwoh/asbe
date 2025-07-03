@@ -8,11 +8,15 @@ import org.example.asbe.model.entity.Book;
 import org.example.asbe.model.entity.Category;
 import org.example.asbe.util.dto.PagedResponse;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface BookService {
 
-    PagedResponse<BookDTO> listBook(int page, int size, String category);
+//    PagedResponse<BookDTO> listBook(int page, int size, String category);
+
+    PagedResponse<BookDTO> listBook(int page, int size, List<String> category);
 
     String addBook(BookDTO book, Set<AuthorDto> authors, Set<CategoryDto> categories);
 
