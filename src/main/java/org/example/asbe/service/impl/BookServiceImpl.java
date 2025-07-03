@@ -22,10 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,18 +42,69 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private BookMapper bookMapper;
 
-    @Override
-    public PagedResponse<BookDTO> listBook(int page, int size, String category) {
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.Direction.ASC, category.isEmpty() ? "id" : "book_id");
+//    @Override
+//    public PagedResponse<BookDTO> listBook(int page, int size, String category) {
+//        Pageable pageable = PageRequest.of(page - 1, size, Sort.Direction.ASC, category.isEmpty() ? "id" : "book_id");
+//        Page<Book> bookPage;
+//
+//        if (category.trim().isEmpty()) {
+//            bookPage = repository.findAll(pageable);
+//        } else {
+//            bookPage = repository.findBooksByCategoryNameContaining(category, pageable);
+//        }
+//
+//        List<BookDTO> bookDTOs = bookMapper.toDtoList(
+//                bookPage.getContent().stream()
+//                        .filter(book -> book.getStockQuantity() > 0)
+//                        .collect(Collectors.toList())
+//        );
+//        return new PagedResponse<>(
+//                bookDTOs,
+//                page,
+//                size,
+//                bookPage.getTotalElements(),
+//                bookPage.getTotalPages(),
+//                bookPage.isLast(),
+//                bookPage.getSort().toString()
+//        );
+//    }
+
+    public PagedResponse<BookDTO> listBook(int page, int size, List<String> categories) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.Direction.ASC, "book_id");
         Page<Book> bookPage;
 
-        if (category.trim().isEmpty()) {
-            bookPage = repository.findAll(pageable);
-        } else {
-            bookPage = repository.findBooksByCategoryNameContaining(category, pageable);
-        }
+        if (categories != null && !categories.isEmpty()) {
+            bookPage = repository.findBooksByCategoryNameContaining(categories, pageable);
+            // Filter books with stockQuantity > 0
+            List<Book> filteredBooks = bookPage.getContent().stream()
+                    .filter(book -> book.getStockQuantity() > 0)
+                    .collect(Collectors.toList());
 
-        List<BookDTO> bookDTOs = bookMapper.toDtoList(
+            // Group by category and map to DTO
+            Map<String, List<BookDTO>> groupedByCategory = new HashMap<>();
+            for (String category : categories) {
+                List<BookDTO> dtosInCategory = filteredBooks.stream()
+                        .filter(book -> book.getCategories().stream()
+                                .map(Category::getName)
+                                .anyMatch(catName -> catName.equalsIgnoreCase(category)))
+                        .map(bookMapper::toDto)
+                        .collect(Collectors.toList());
+                groupedByCategory.put(category, dtosInCategory);
+            }
+
+            return new PagedResponse<>(
+                    groupedByCategory,
+                    page,
+                    size,
+                    bookPage.getTotalElements(),
+                    bookPage.getTotalPages(),
+                    bookPage.isLast(),
+                    bookPage.getSort().toString()
+            );
+        } else {
+            Pageable pageableNoCategory = PageRequest.of(page - 1, size, Sort.Direction.ASC, "id");
+            bookPage = repository.findAll(pageableNoCategory);
+                    List<BookDTO> bookDTOs = bookMapper.toDtoList(
                 bookPage.getContent().stream()
                         .filter(book -> book.getStockQuantity() > 0)
                         .collect(Collectors.toList())
@@ -70,6 +118,9 @@ public class BookServiceImpl implements BookService {
                 bookPage.isLast(),
                 bookPage.getSort().toString()
         );
+        }
+
+
     }
 
     @Override
@@ -96,7 +147,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book updateBook(Book book, Integer id) {
-        if(repository.existsById(id)){
+        if (repository.existsById(id)) {
             Book existingBook = repository.findById(id).get();
             existingBook.setTitle(book.getTitle());
 //            existingBook.setAuthor(book.getAuthor());
@@ -107,7 +158,7 @@ public class BookServiceImpl implements BookService {
 //            existingBook.setImageUrl(book.getImageUrl());
             return repository.save(book);
         }
-        return  null;
+        return null;
     }
 
     @Override
@@ -124,8 +175,7 @@ public class BookServiceImpl implements BookService {
         Optional<Book> optionalBook = repository.findById(id);
         if (optionalBook.isPresent()) {
             return optionalBook.get();
-        }
-        else {
+        } else {
             throw new CustomException(messageUtil.getMessage("error.book.notFound", id));
         }
     }

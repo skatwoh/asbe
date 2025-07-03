@@ -16,4 +16,6 @@ public class BookCartSdi {
 
     Integer quantity;
 
+    Boolean status;
+
 }
